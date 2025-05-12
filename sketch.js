@@ -17,14 +17,28 @@ const rightEyeIndices = [
 
 function setup() {
   createCanvas(640, 480);
-  video = createCapture(VIDEO);
-  video.size(width, height);
-  video.hide();
 
-  facemesh = ml5.facemesh(video, modelReady);
-  facemesh.on("predict", results => {
-    predictions = results;
-  });
+  // 嘗試啟用攝像頭，並處理可能的錯誤
+  try {
+    video = createCapture(VIDEO);
+    video.size(width, height);
+    video.hide();
+  } catch (error) {
+    console.error("Error accessing video device:", error);
+    noLoop(); // 停止 draw 迴圈
+    return;
+  }
+
+  // 嘗試加載 facemesh 模型
+  try {
+    facemesh = ml5.facemesh(video, modelReady);
+    facemesh.on("predict", results => {
+      predictions = results;
+    });
+  } catch (error) {
+    console.error("Error loading facemesh model:", error);
+    noLoop(); // 停止 draw 迴圈
+  }
 }
 
 function modelReady() {
@@ -32,6 +46,8 @@ function modelReady() {
 }
 
 function draw() {
+  if (!video) return; // 如果攝像頭未啟用，停止繪製
+
   image(video, 0, 0, width, height);
 
   noFill();
