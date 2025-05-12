@@ -34,6 +34,7 @@ function setup() {
     facemesh = ml5.facemesh(video, modelReady);
     facemesh.on("predict", results => {
       predictions = results;
+      console.log(predictions);
     });
   } catch (error) {
     console.error("Error loading facemesh model:", error);
@@ -54,12 +55,16 @@ function draw() {
   stroke(255, 0, 0); // 紅色
   strokeWeight(5); // 線條粗細
 
+  // 檢查 predictions 是否有數據
   if (predictions.length > 0) {
+    console.log(predictions); // 除錯：檢查 predictions 的內容
     const keypoints = predictions[0].scaledMesh;
 
     drawConnections(keypoints, lipsIndices);
     drawConnections(keypoints, leftEyeIndices);
     drawConnections(keypoints, rightEyeIndices);
+  } else {
+    console.log("No predictions available.");
   }
 }
 
@@ -67,6 +72,8 @@ function drawConnections(keypoints, indices) {
   for (let i = 0; i < indices.length - 1; i++) {
     const start = keypoints[indices[i]];
     const end = keypoints[indices[i + 1]];
-    line(start[0], start[1], end[0], end[1]);
+    if (start && end) {
+      line(start[0], start[1], end[0], end[1]);
+    }
   }
 }
