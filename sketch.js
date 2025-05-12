@@ -52,16 +52,23 @@ function draw() {
   image(video, 0, 0, width, height);
 
   noFill();
-  stroke(255, 0, 0); // 紅色
-  strokeWeight(5); // 線條粗細
+  strokeWeight(3); // 將線條粗細改為 3
 
   // 檢查 predictions 是否有數據
   if (predictions.length > 0) {
     console.log(predictions); // 除錯：檢查 predictions 的內容
     const keypoints = predictions[0].scaledMesh;
 
+    // 繪製嘴唇（紅色）
+    stroke(255, 0, 0); // 紅色
     drawConnections(keypoints, lipsIndices);
+
+    // 繪製左眼（藍色）
+    stroke(0, 0, 255); // 藍色
     drawConnections(keypoints, leftEyeIndices);
+
+    // 繪製右眼（綠色）
+    stroke(0, 255, 0); // 綠色
     drawConnections(keypoints, rightEyeIndices);
   } else {
     console.log("No predictions available.");
